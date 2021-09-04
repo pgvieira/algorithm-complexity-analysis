@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import MaxAbsScaler
 
 complexity_dictionary = {'n': 0, 'n_square': 1, '1': 2, 'nlogn': 3, 'logn': 4}
 
@@ -19,6 +20,14 @@ y_array_training, y_array_testing = dataframe_testing.iloc[:, :13].values, dataf
 y_array_training = [list(map(int, x)) for x in y_array_training]
 y_array_testing = np.array([int(complexity_dictionary[row[0]]) for row in y_array_testing])
 
+p = MaxAbsScaler()
+
+p.fit(x_array_training)
+x_array_training = p.transform(x_array_training)
+
+p.fit(y_array_training)
+y_array_training = p.transform(y_array_training)
+
 # wcss = []
 # for i in range(1, 50):
 #    kmeans = KMeans(n_clusters=i, init='random').fit(x_array_training)
@@ -30,8 +39,7 @@ y_array_testing = np.array([int(complexity_dictionary[row[0]]) for row in y_arra
 # plt.ylabel('WSS')
 # plt.show()
 
-kmeans = KMeans(n_clusters=5, init='random', random_state=534, max_iter=534)
-kmeans.fit(x_array_training)
+kmeans = KMeans(n_clusters=5, random_state=0).fit(x_array_training)
 y_predicted = kmeans.predict(y_array_training)
 
 print(accuracy_score(y_predicted, y_array_testing) * 100)
