@@ -39,7 +39,7 @@ y_array_training = p.transform(y_array_training)
 # plt.ylabel('WSS')
 # plt.show()
 
-kmeans = KMeans(n_clusters=5, random_state=0).fit(x_array_training)
+kmeans = KMeans(n_clusters=5).fit(x_array_training)
 y_predicted = kmeans.predict(y_array_training)
 
 print(accuracy_score(y_predicted, y_array_testing) * 100)
