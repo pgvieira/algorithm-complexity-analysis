@@ -27,16 +27,16 @@ def calculate_vif(X):
     return vif
 
 
-X = data_csv.iloc[:, :-1]
+
+columns_drop = ['num_Switch', 'num_Break', 'num_Sort', 'num_Hash_Map', 'num_Hash_Set', 'num_Nasted_Loop', 'num_Priority', 'num_State', 'complexity']
+X = data_csv.drop(columns_drop, 1)
 print(calculate_vif(X))
 
-formula = "complexity ~ num_If + num_Switch + num_Loof + num_Break + num_Priority + num_Sort + num_Hash_Map + num_Hash_Set + num_Recursive + num_Nasted_Loop + num_Variables + num_Method + num_State"
+formula = 'complexity ~ num_If * (num_Method + num_Variables + num_Recursive + num_Loof) + ' \
+          'num_Loof * (num_Variables + num_Method) + ' \
+          'num_Recursive * (num_Method + num_Variables) + ' \
+          'num_Variables * (num_Method) + ' \
+          'num_Method'
 mlr = ols(formula, data=data_csv)
 estimates = mlr.fit()
 print(estimates.summary())
-
-
-formula = "complexity ~ num_If + num_Switch + num_Loof + num_Break + num_Priority + num_Sort + num_Hash_Map + num_Hash_Set + num_Recursive + num_Nasted_Loop + num_Variables + num_Method + num_State"
-logit_model = logit(formula, data=data_csv)
-logit_estimates = logit_model.fit()
-print(logit_estimates.summary())
