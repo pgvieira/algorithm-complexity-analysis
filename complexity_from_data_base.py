@@ -1,17 +1,17 @@
 import javalang
-
 import numpy as np
-import os.path as op
 import pandas as pd
+import os.path as op
 from javalang import tree
 
 
-complexity_dictionary = {'n': 0, 'n_square': 1, '1': 2, 'nlogn': 3, 'logn': 4}
+complexity_dictionary_best_performance = {'n': 0, 'n_square': 1, '1': 0, 'nlogn': 1, 'logn': 0}
+complexity_dictionary_type_classes = {'n': 0, 'n_square': 1, '1': 2, 'nlogn': 3, 'logn': 4}
 
-array_suport = ['num_If', 'num_Switch', 'num_Loof', 'num_Break', 'num_Priority', 'num_Sort', 'num_Hash_Map',
-                'num_Hash_Set', 'num_Recursive', 'num_Nasted_Loop', 'num_Variables', 'num_Method', 'num_State']
+array_suport = ['num_If', 'num_Switch', 'num_Loof', 'num_Break', 'num_Priority', 'num_Sort', 'num_Hash_Map', 'num_Hash_Set', 'num_Recursive', 'num_Nasted_Loop', 'num_Variables', 'num_Method', 'num_State']
 
-data = pd.DataFrame(columns=array_suport)
+data_best_performance = pd.DataFrame(columns=array_suport)
+data_type_classes = pd.DataFrame(columns=array_suport)
 
 
 def state_counter(typelist):
@@ -33,7 +33,7 @@ def state_counter(typelist):
 
 
 def extract_value_from_file(string_file):
-    path_to_file = path_base_data + '/' + string_file
+    path_to_file = 'base_dados/code_java/' + string_file
 
     if op.isfile(path_to_file):
         file = open(path_to_file)
@@ -79,8 +79,7 @@ def extract_value_from_file(string_file):
 
         num_if = typelist.count(javalang.tree.IfStatement)
         num_loof = typelist.count(javalang.tree.ForStatement) + typelist.count(javalang.tree.WhileStatement)
-        num_vari = typelist.count(javalang.tree.VariableDeclaration) + typelist.count(
-            javalang.tree.LocalVariableDeclaration)
+        num_vari = typelist.count(javalang.tree.VariableDeclaration) + typelist.count(javalang.tree.LocalVariableDeclaration)
         num_break = typelist.count(javalang.tree.BreakStatement)
         num_method = typelist.count(javalang.tree.MethodDeclaration)
         num_switch = typelist.count(javalang.tree.SwitchStatement)
@@ -92,25 +91,22 @@ def extract_value_from_file(string_file):
         return []
 
 
-array_suport = np.zeros(13)
+data_frame = pd.read_csv('base_dados/base_path_file_complexity.csv').dropna()
+data_name = data_frame['file_name'].reset_index(drop=True)
+data_complexity = data_frame['complexity'].reset_index(drop=True)
 
-path_base_data = 'base_dados/code_java'
+data_complexity_best_performance = np.array([int(complexity_dictionary_best_performance[row]) for row in data_complexity])
+data_complexity_type_classes = np.array([int(complexity_dictionary_type_classes[row]) for row in data_complexity])
 
-temp_data = pd.read_csv('base_dados/finalFeatureData.csv').dropna()
-data_name = temp_data['file_name'].reset_index(drop=True)
-data_complexity = temp_data['complexity'].reset_index(drop=True)
-
-data_complexity = np.array([int(complexity_dictionary[row]) for row in data_complexity])
-
-for num, i in enumerate(data_name):
-    values_from_file = extract_value_from_file(i)
+for num, val in enumerate(data_name):
+    values_from_file = extract_value_from_file(val)
     if values_from_file:
-        data.loc[num] = values_from_file
+        data_best_performance.loc[num] = values_from_file
+        data_type_classes.loc[num] = values_from_file
 
 
-data = data.assign(complexity=data_complexity)
+data_best_performance = data_best_performance.assign(complexity=data_complexity_best_performance)
+data_type_classes = data_type_classes.assign(complexity=data_complexity_type_classes)
 
-data.to_csv('out.csv', index=False)
-
-
-
+data_best_performance.to_csv('base_dados/out_best_performance.csv', index=False)
+data_type_classes.to_csv('base_dados/out_type_classes.csv', index=False)
