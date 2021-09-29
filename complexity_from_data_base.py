@@ -5,13 +5,13 @@ import os.path as op
 from javalang import tree
 
 
-complexity_dictionary_best_performance = {'n': 0, 'n_square': 1, '1': 0, 'nlogn': 1, 'logn': 0}
-complexity_dictionary_type_classes = {'n': 0, 'n_square': 1, '1': 2, 'nlogn': 3, 'logn': 4}
+complexity_dictionary_binomial = {'n': 0, 'n_square': 1, '1': 0, 'nlogn': 1, 'logn': 0}
+complexity_dictionary_multinomial = {'n': 0, 'n_square': 1, '1': 2, 'nlogn': 3, 'logn': 4}
 
 array_suport = ['num_If', 'num_Switch', 'num_Loof', 'num_Break', 'num_Priority', 'num_Sort', 'num_Hash_Map', 'num_Hash_Set', 'num_Recursive', 'num_Nasted_Loop', 'num_Variables', 'num_Method', 'num_State']
 
-data_best_performance = pd.DataFrame(columns=array_suport)
-data_type_classes = pd.DataFrame(columns=array_suport)
+data_binomial = pd.DataFrame(columns=array_suport)
+data_multinomial = pd.DataFrame(columns=array_suport)
 
 
 def state_counter(typelist):
@@ -85,8 +85,7 @@ def extract_value_from_file(string_file):
         num_switch = typelist.count(javalang.tree.SwitchStatement)
         num_state = state_counter(typelist)
 
-        return [num_if, num_switch, num_loof, num_break, num_Priority, num_sort, num_hash_map, num_hash_set,
-                num_recursive, num_nasted_loop, num_vari, num_method, num_state]
+        return [num_if, num_switch, num_loof, num_break, num_Priority, num_sort, num_hash_map, num_hash_set, num_recursive, num_nasted_loop, num_vari, num_method, num_state]
     else:
         return []
 
@@ -95,18 +94,18 @@ data_frame = pd.read_csv('base_dados/base_path_file_complexity.csv').dropna()
 data_name = data_frame['file_name'].reset_index(drop=True)
 data_complexity = data_frame['complexity'].reset_index(drop=True)
 
-data_complexity_best_performance = np.array([int(complexity_dictionary_best_performance[row]) for row in data_complexity])
-data_complexity_type_classes = np.array([int(complexity_dictionary_type_classes[row]) for row in data_complexity])
+data_complexity_binomial = np.array([int(complexity_dictionary_binomial[row]) for row in data_complexity])
+data_complexity_multinomial = np.array([int(complexity_dictionary_multinomial[row]) for row in data_complexity])
 
 for num, val in enumerate(data_name):
     values_from_file = extract_value_from_file(val)
     if values_from_file:
-        data_best_performance.loc[num] = values_from_file
-        data_type_classes.loc[num] = values_from_file
+        data_binomial.loc[num] = values_from_file
+        data_multinomial.loc[num] = values_from_file
 
 
-data_best_performance = data_best_performance.assign(complexity=data_complexity_best_performance)
-data_type_classes = data_type_classes.assign(complexity=data_complexity_type_classes)
+data_binomial = data_binomial.assign(complexity=data_complexity_binomial)
+data_multinomial = data_multinomial.assign(complexity=data_complexity_multinomial)
 
-data_best_performance.to_csv('base_dados/out_best_performance.csv', index=False)
-data_type_classes.to_csv('base_dados/out_type_classes.csv', index=False)
+data_binomial.to_csv('base_dados/out_binomial.csv', index=False)
+data_multinomial.to_csv('base_dados/out_multinomial.csv', index=False)
