@@ -10,29 +10,31 @@ data_frame = pd.DataFrame(columns=array_suport)
 
 data = pd.read_csv('base_dados/out_multinomial.csv').dropna()
 
-x_train, x_test, y_train, y_test = train_test_split(data.drop('complexity', axis=1), data['complexity'], test_size=.3, random_state=0)
+data_values = data.iloc[:, :13].values
+
+data_complexity = data.iloc[:, 13:].values
+data_complexity = [int(x) for x in data_complexity]
 
 kmeans = KMeans(n_clusters=5, max_iter=1000, random_state=5)
-kmeans.fit(x_train)
-predictions = kmeans.predict(x_test)
+predictions = kmeans.fit_predict(data_values, data_complexity)
 
-print(accuracy_score(y_test, predictions))
+print(accuracy_score(data_complexity, predictions))
 
 print('Predictions', Counter(predictions))
-print('True values', Counter(y_test))
+print('True values', Counter(data_complexity))
 
 print('Matrix de Confusão')
-print(confusion_matrix(y_test, predictions))
+print(confusion_matrix(data_complexity, predictions))
 
 print('Precisão Computacional')
-print(classification_report(y_test, predictions))
+print(classification_report(data_complexity, predictions))
 
-for i in range(len(y_test)):
-    data_frame.loc[i] = x_test.values[i]
+for i in range(len(data_complexity)):
+    data_frame.loc[i] = data_values[i]
 
-array_true = [predictions[i] == y_test.values[i] for i in range(len(y_test))]
+array_true = [predictions[i] == data_complexity[i] for i in range(len(data_complexity))]
 
-data_frame = data_frame.assign(complexity=y_test.values)
+data_frame = data_frame.assign(complexity=data_complexity)
 data_frame = data_frame.assign(complexity_predicted=predictions)
 data_frame = data_frame.assign(acertos=array_true)
 
