@@ -1,10 +1,14 @@
+import numpy as np
 import pandas as pd
 import pickle
+
+from matplotlib import pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 from collections import Counter
 
-array_suport = ['num_If', 'num_Switch', 'num_Loof', 'num_Break', 'num_Priority', 'num_Sort', 'num_Hash_Map', 'num_Hash_Set', 'num_Recursive', 'num_Nasted_Loop', 'num_Variables', 'num_Method', 'num_State']
+array_suport = ['num_If', 'num_Switch', 'num_Loof', 'num_Break', 'num_Priority', 'num_Sort', 'num_Hash_Map',
+                'num_Hash_Set', 'num_Recursive', 'num_Nasted_Loop', 'num_Variables', 'num_Method', 'num_State']
 data_frame = pd.DataFrame(columns=array_suport)
 
 data = pd.read_csv('base_dados/out_binomial.csv').dropna()
@@ -28,7 +32,6 @@ print(confusion_matrix(data_complexity, predictions))
 print('Precisão Computacional')
 print(classification_report(data_complexity, predictions))
 
-
 for i in range(len(data_complexity)):
     data_frame.loc[i] = data_values[i]
 
@@ -40,5 +43,26 @@ data_frame = data_frame.assign(acertos=array_true)
 
 print(data_frame)
 
-with open('models_regression_store/logistic_regression_binomial.pkl', 'wb') as file:
-    pickle.dump(logmodel, file)
+plt.figure(figsize=(20, 12))
+
+labels = ['0 { n - 1 - logn }', '1 { n_square - nlogn }']
+predictions = [Counter(predictions).get(0), Counter(predictions).get(1)]
+data_complexity = [Counter(data_complexity).get(0), Counter(data_complexity).get(1)]
+
+x = np.arange(len(labels))  # the label locations
+width = 0.35  # the width of the bars
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(x - width/2, predictions, width, label='Predicted')
+rects2 = ax.bar(x + width/2, data_complexity, width, label='Real Values')
+
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+
+ax.bar_label(rects1, padding=3)
+ax.bar_label(rects2, padding=3)
+
+fig.tight_layout()
+plt.savefig('graficos/logistic_regression_binominal.png', format='png')
+plt.show()

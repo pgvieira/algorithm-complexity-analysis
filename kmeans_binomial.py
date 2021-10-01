@@ -1,6 +1,8 @@
 from collections import Counter
 
+import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
@@ -38,3 +40,27 @@ data_frame = data_frame.assign(complexity_predicted=predictions)
 data_frame = data_frame.assign(acertos=array_true)
 
 print(data_frame)
+
+plt.figure(figsize=(20, 12))
+
+labels = ['0 { n - 1 - logn }', '1 { n_square - nlogn }']
+predictions = [Counter(predictions).get(0), Counter(predictions).get(1)]
+data_complexity = [Counter(data_complexity).get(0), Counter(data_complexity).get(1)]
+
+x = np.arange(len(labels))  # the label locations
+width = 0.35  # the width of the bars
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(x - width/2, predictions, width, label='Predicted')
+rects2 = ax.bar(x + width/2, data_complexity, width, label='Real Values')
+
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+
+ax.bar_label(rects1, padding=3)
+ax.bar_label(rects2, padding=3)
+
+fig.tight_layout()
+plt.savefig('graficos/kmeans_binomial.png', format='png')
+plt.show()
