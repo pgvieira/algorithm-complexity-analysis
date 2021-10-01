@@ -44,10 +44,6 @@ data_frame = data_frame.assign(acertos=array_true)
 
 print(data_frame)
 
-with open('models_regression_store/logistic_regression_multinomial.pkl', 'wb') as file:
-    pickle.dump(logmodel, file)
-
-
 plt.figure(figsize=(20, 12))
 
 labels = ['n', 'n_square', '1', 'nlogn', 'logn']
