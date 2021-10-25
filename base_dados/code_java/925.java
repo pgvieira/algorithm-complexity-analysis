@@ -114,7 +114,6 @@ public class Main {
     }
   }
 
-
   public static long pow(long x, long n){
     long ans = 1;
     while(n > 0){
@@ -141,17 +140,14 @@ public class Main {
 		}
 	}
 
-	//nCk % mod
 	public static long comb(int n, int k){
 		return fac[n] * finv[k] % mod * finv[n - k] % mod;
 	}
 
-	//n! % mod
 	public static long fact(int n){
 		return fac[n];
 	}
 
-	//(n!)^-1 with % mod
 	public static long finv(int n){
 		return finv[n];
 	}

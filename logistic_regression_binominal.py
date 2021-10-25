@@ -66,3 +66,6 @@ ax.bar_label(rects2, padding=3)
 fig.tight_layout()
 plt.savefig('graficos/logistic_regression_binominal.png', format='png')
 plt.show()
+
+with open('models_regression_store/logistic_regression_binomial.pkl', 'wb') as file:
+    pickle.dump(logmodel, file)

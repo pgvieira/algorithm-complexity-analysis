@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 
 from app_service import AppService
 
-pydevd_pycharm.settrace('127.0.0.1', port=5001, stdoutToServer=True, stderrToServer=True)
+"pydevd_pycharm.settrace('127.0.0.1', port=5001, stdoutToServer=True, stderrToServer=True)"
 
 app_service = AppService()
 

@@ -40,10 +40,7 @@ def extract_value_from_file(string_file):
         source = file.read()
         file.close()
 
-        try:
-            tree = javalang.parse.parse(source)
-        except:
-            return []
+        tree = javalang.parse.parse(source)
 
         typelist = []
 

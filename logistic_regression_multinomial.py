@@ -67,3 +67,6 @@ ax.bar_label(rects2, padding=3)
 fig.tight_layout()
 plt.savefig('graficos/logistic_regression_multinomial.png', format='png')
 plt.show()
+
+with open('models_regression_store/logistic_regression_multinomial.pkl', 'wb') as file:
+    pickle.dump(logmodel, file)
